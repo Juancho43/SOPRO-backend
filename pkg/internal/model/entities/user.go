@@ -3,12 +3,12 @@ package entities
 import "time"
 
 type User struct {
-	UID   string // Must be uppercase 'ID', not 'id'
+	UID   string
 	Email string
 	Name  string
 
-	CurrentStreak int       // Must be uppercase 'C'
-	MaxStreak     int       // Must be uppercase 'M'
-	CreatedAt     time.Time // Must be uppercase 'C'
-	UpdatedAt     time.Time // Must be uppercase 'U'
+	CurrentStreak int
+	MaxStreak     int
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }

@@ -1,8 +1,8 @@
 package services
 
 import (
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/entities"
-	usecases "github.com/Juancho43/SOPRO-backend/app/internal/use_cases"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
+	usecases "github.com/Juancho43/SOPRO-backend/pkg/internal/use_cases"
 )
 
 type AuthService struct {

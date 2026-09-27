@@ -1,14 +1,14 @@
 package injectors
 
 import (
-	"github.com/Juancho43/SOPRO-backend/app/core"
-	"github.com/Juancho43/SOPRO-backend/app/external"
-	"github.com/Juancho43/SOPRO-backend/app/external/postgress"
-	"github.com/Juancho43/SOPRO-backend/app/internal"
-	usecases "github.com/Juancho43/SOPRO-backend/app/internal/use_cases"
-	"github.com/Juancho43/SOPRO-backend/app/src/handlers"
-	"github.com/Juancho43/SOPRO-backend/app/src/middleware"
-	"github.com/Juancho43/SOPRO-backend/app/src/services"
+	"github.com/Juancho43/SOPRO-backend/pkg/core"
+	"github.com/Juancho43/SOPRO-backend/pkg/external"
+	"github.com/Juancho43/SOPRO-backend/pkg/external/postgress"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal"
+	usecases "github.com/Juancho43/SOPRO-backend/pkg/internal/use_cases"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/handlers"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/middleware"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/services"
 )
 
 func AuthModule(core *core.Core) {

@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	"firebase.google.com/go/v4/auth"
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/entities"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
 )
 
 type FirebaseVerifier struct {

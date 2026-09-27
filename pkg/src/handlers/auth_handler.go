@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/entities"
-	"github.com/Juancho43/SOPRO-backend/app/src/services"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/services"
 	"github.com/gin-gonic/gin"
 )
 

@@ -1,8 +1,8 @@
 package usecases
 
 import (
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/entities"
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/repositories"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/repositories"
 )
 
 type LoginUseCase struct {

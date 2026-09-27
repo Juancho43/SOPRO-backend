@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/Juancho43/SOPRO-backend/app/internal"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal"
 	"github.com/gin-gonic/gin"
 )
 

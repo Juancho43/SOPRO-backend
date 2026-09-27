@@ -1,7 +1,7 @@
 package injectors
 
 import (
-	"github.com/Juancho43/SOPRO-backend/app/src/handlers"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/handlers"
 	"github.com/gin-gonic/gin"
 )
 

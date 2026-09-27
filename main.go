@@ -4,8 +4,8 @@ import (
 	"embed"
 	"fmt"
 
-	"github.com/Juancho43/SOPRO-backend/app/core"
-	"github.com/Juancho43/SOPRO-backend/app/src/injectors"
+	"github.com/Juancho43/SOPRO-backend/pkg/core"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/injectors"
 )
 
 //go:embed db/migrations/*.sql

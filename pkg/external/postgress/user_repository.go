@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/Juancho43/SOPRO-backend/app/internal/model/entities"
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

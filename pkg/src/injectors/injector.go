@@ -1,8 +1,8 @@
 package injectors
 
 import (
-	"github.com/Juancho43/SOPRO-backend/app/core"
-	"github.com/Juancho43/SOPRO-backend/app/external"
+	"github.com/Juancho43/SOPRO-backend/pkg/core"
+	"github.com/Juancho43/SOPRO-backend/pkg/external"
 )
 
 func InjectAll(app *core.Core) {
