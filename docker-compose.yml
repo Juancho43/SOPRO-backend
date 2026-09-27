@@ -5,7 +5,7 @@ services:
      restart: always
      environment:
       POSTGRES_USER: developer
-      POSTGRES_PASSWORD: sorpo_developer
+      POSTGRES_PASSWORD: sopro_developer
       POSTGRES_DB: sopro_dev
      ports:
       - "5432:5432"
@@ -13,7 +13,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   backend:
-    image: golang:1.24-alpine
+    image: golang:1.26-alpine
     container_name: sopro_go_dev
     restart: on-failure
     ports:
@@ -27,6 +27,9 @@ services:
     depends_on:
       - postgres
     command: go run main.go
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
 
 volumes:
   pgdata:
