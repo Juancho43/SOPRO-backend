@@ -2,11 +2,12 @@ package postgress
 
 import (
 	"context"
-	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -42,14 +43,16 @@ func (r *PostgresUserRepository) SaveUser(user *entities.User) error {
 
 func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	query := `
-		SELECT id, firebase_uid, email, current_streak, max_streak, created_at, updated_at 
+		SELECT firebase_uid, email, current_streak, max_streak, created_at, updated_at 
 		FROM users 
 		WHERE firebase_uid = $1`
+	fmt.Print("id a buscar", uid)
 
 	user := &entities.User{}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	// Mapeamos todas las columnas de la tabla al struct[cite: 11]
+
+	// Ahora el Scan recibe correctamente las 6 variables
 	err := r.db.QueryRow(ctx, query, uid).Scan(
 		&user.UID,
 		&user.Email,
@@ -60,8 +63,9 @@ func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	)
 
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, errors.New("usuario no encontrado") // Idealmente, devuelve un error personalizado de dominio
+		// Validamos usando pgx.ErrNoRows
+		if errors.Is(err, pgx.ErrNoRows) {
+			return nil, errors.New("usuario no encontrado")
 		}
 		return nil, err
 	}

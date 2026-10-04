@@ -16,11 +16,18 @@ func NewAuthHandler(service *services.AuthService) *AuthHandler {
 	return &AuthHandler{service: service}
 }
 
-// Asegúrate de inyectar el middleware en las rutas en tu main o router
 func (h *AuthHandler) SetRoutes(router *gin.Engine, authMiddleware gin.HandlerFunc) {
 	router.POST("api/login/google", authMiddleware, h.GoogleLogin)
 }
 
+// GoogleLogin godoc
+// @Summary Autenticación maestra con Google
+// @Description Gestiona el inicio de sesión o creación de cuenta. Requiere que el token de Firebase haya sido validado por el middleware.
+// @Tags Autenticación
+// @Produce json
+// @Success 200 {object} map[string]interface{} "Login exitoso y datos del usuario."
+// @Failure 500 {object} map[string]string "Error interno o usuario no encontrado en el contexto."
+// @Router /api/login/google [post]
 func (h *AuthHandler) GoogleLogin(c *gin.Context) {
 	userObj, exists := c.Get("user")
 	if !exists {

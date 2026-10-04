@@ -16,7 +16,6 @@ type Core struct {
 	Database *pgxpool.Pool
 }
 
-// NewCore inicializa el núcleo del sistema, instanciando el motor HTTP.
 func NewCore(cfg *Config) *Core {
 	if cfg.Environment == "production" {
 		gin.SetMode(gin.ReleaseMode)

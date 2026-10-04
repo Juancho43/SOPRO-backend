@@ -19,7 +19,7 @@ func NewDatabasePool(url string) *pgxpool.Pool {
 	}
 	err = pool.Ping(ctx)
 	if err != nil {
-		log.Fatalf("El ping a Supabase falló: %v\n", err)
+		log.Fatalf("El ping a la BD falló: %v\n", err)
 	}
 	return pool
 }
@@ -41,5 +41,5 @@ func Migrate(url string, migrationsFS embed.FS) {
 		log.Fatalf("Error ejecutando migraciones: %v", err)
 	}
 
-	log.Println("Migraciones aplicadas con éxito en Supabase.")
+	log.Println("Migraciones aplicadas con éxito en la BD.")
 }

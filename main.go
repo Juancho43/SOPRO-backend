@@ -2,7 +2,6 @@ package main
 
 import (
 	"embed"
-	"fmt"
 
 	"github.com/Juancho43/SOPRO-backend/pkg/core"
 	"github.com/Juancho43/SOPRO-backend/pkg/src/injectors"
@@ -15,12 +14,13 @@ var embedMigrations embed.FS
 // @version 0.1
 // @description SOPRO_CORE_ENGINE
 // @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	cfg := core.LoadConfig()
 	core.Migrate(cfg.DatabaseURL, embedMigrations)
 	appCore := core.NewCore(cfg)
 	injectors.InjectAll(appCore)
-	fmt.Print(cfg)
 	appCore.Start()
-	fmt.Print("HI")
 }

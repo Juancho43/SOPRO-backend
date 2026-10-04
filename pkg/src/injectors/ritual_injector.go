@@ -9,10 +9,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func AuthModule(core *core.Core, authMiddleware gin.HandlerFunc) {
-	repo := postgress.NewPostgresUserRepository(core.Database)
-	usecase := usecases.NewLoginUseCase(repo)
-	service := services.NewAuthService(usecase)
-	handler := handlers.NewAuthHandler(service)
+func RitualModule(core *core.Core, authMiddleware gin.HandlerFunc) {
+	repo := postgress.NewPostgresRitualRepository(core.Database)
+	useCase, _ := usecases.NewDailyRitual(repo, core.Config.Timezone)
+	service := services.NewRitualService(useCase)
+	handler := handlers.NewRitualHandler(service)
 	handler.SetRoutes(core.Router, authMiddleware)
 }
