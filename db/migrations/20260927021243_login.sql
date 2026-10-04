@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE users (
-firebase_uid PRIMARY KEY VARCHAR(128) UNIQUE NOT NULL,
+firebase_uid VARCHAR(128) PRIMARY KEY NOT NULL,
 email VARCHAR(255) UNIQUE NOT NULL,
 current_streak INTEGER DEFAULT 0,
 max_streak INTEGER DEFAULT 0,
