@@ -63,7 +63,39 @@
         },
         "/api/rituals": {
             "get": {
-                "responses": {}
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Devuelve la lista histórica de todos los rituales diarios forjados por el usuario.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ritual"
+                ],
+                "summary": "Obtiene el historial de rituales",
+                "responses": {
+                    "200": {
+                        "description": "Historial obtenido con éxito.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Ritual"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             },
             "post": {
                 "security": [
@@ -94,7 +126,7 @@
                     }
                 ],
                 "responses": {
-                    "200": {
+                    "201": {
                         "description": "¡Ritual completado! Tu enfoque está asegurado para hoy.",
                         "schema": {
                             "type": "object",
@@ -144,11 +176,85 @@
         },
         "/api/rituals/today": {
             "get": {
-                "responses": {}
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna el agradecimiento y las metas establecidas para el día actual si ya fue creado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ritual"
+                ],
+                "summary": "Verifica y obtiene el ritual de hoy",
+                "responses": {
+                    "200": {
+                        "description": "Ritual del día obtenido con éxito.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Aún no has forjado tu disciplina hoy.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
             }
         }
     },
     "definitions": {
+        "entities.Ritual": {
+            "type": "object",
+            "properties": {
+                "agradecimiento": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "metas": {
+                    "description": "El éxito exige enfoque: exactamente 10 metas",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
         "usecases.DailyRitualCommand": {
             "type": "object",
             "properties": {

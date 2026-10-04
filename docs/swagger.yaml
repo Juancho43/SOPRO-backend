@@ -1,5 +1,23 @@
 basePath: /
 definitions:
+  entities.Ritual:
+    properties:
+      agradecimiento:
+        type: string
+      createdAt:
+        type: string
+      date:
+        type: string
+      id:
+        type: string
+      metas:
+        description: 'El éxito exige enfoque: exactamente 10 metas'
+        items:
+          type: string
+        type: array
+      userID:
+        type: string
+    type: object
   usecases.DailyRitualCommand:
     properties:
       goals:
@@ -63,7 +81,28 @@ paths:
       - Autenticación
   /api/rituals:
     get:
-      responses: {}
+      description: Devuelve la lista histórica de todos los rituales diarios forjados
+        por el usuario.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Historial obtenido con éxito.
+          schema:
+            items:
+              $ref: '#/definitions/entities.Ritual'
+            type: array
+        "401":
+          description: No autorizado.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Obtiene el historial de rituales
+      tags:
+      - Ritual
     post:
       consumes:
       - application/json
@@ -79,7 +118,7 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
+        "201":
           description: ¡Ritual completado! Tu enfoque está asegurado para hoy.
           schema:
             additionalProperties:
@@ -117,7 +156,38 @@ paths:
       - Ritual
   /api/rituals/today:
     get:
-      responses: {}
+      description: Retorna el agradecimiento y las metas establecidas para el día
+        actual si ya fue creado.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ritual del día obtenido con éxito.
+          schema:
+            type: boolean
+        "401":
+          description: No autorizado.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Aún no has forjado tu disciplina hoy.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error interno del servidor.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Verifica y obtiene el ritual de hoy
+      tags:
+      - Ritual
 securityDefinitions:
   BearerAuth:
     in: header

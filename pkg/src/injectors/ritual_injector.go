@@ -12,7 +12,8 @@ import (
 func RitualModule(core *core.Core, authMiddleware gin.HandlerFunc) {
 	repo := postgress.NewPostgresRitualRepository(core.Database)
 	useCase, _ := usecases.NewDailyRitual(repo, core.Config.Timezone)
-	service := services.NewRitualService(useCase)
+	todaysUsecase, _ := usecases.NewTodaysRitual(repo, core.Config.Timezone)
+	service := services.NewRitualService(useCase, todaysUsecase, core.Logger)
 	handler := handlers.NewRitualHandler(service)
 	handler.SetRoutes(core.Router, authMiddleware)
 }
