@@ -20,16 +20,13 @@ func NewPostgresUserRepository(db *pgxpool.Pool) *PostgresUserRepository {
 }
 
 func (r *PostgresUserRepository) SaveUser(user *entities.User) error {
-	// Solo insertamos firebase_uid y email.
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	// id, streaks y timestamps se generan automáticamente en la BD por los valores DEFAULT[cite: 11].
 	query := `
 		INSERT INTO users (firebase_uid, email) 
 		VALUES ($1, $2) 
 		RETURNING id, current_streak, max_streak, created_at, updated_at`
 
-	// Ejecutamos y recuperamos los valores autogenerados para actualizar la entidad en memoria
 	err := r.db.QueryRow(ctx, query, user.UID, user.Email).Scan(
 		&user.UID,
 		&user.CurrentStreak,

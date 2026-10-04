@@ -1,14 +1,12 @@
 -- +goose Up
 CREATE TABLE users (
-id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-firebase_uid VARCHAR(128) UNIQUE NOT NULL,
+firebase_uid PRIMARY KEY VARCHAR(128) UNIQUE NOT NULL,
 email VARCHAR(255) UNIQUE NOT NULL,
 current_streak INTEGER DEFAULT 0,
 max_streak INTEGER DEFAULT 0,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
-CREATE INDEX idx_users_firebase_uid ON users(firebase_uid);
 
 -- +goose Down
 DROP TABLE IF EXISTS users;

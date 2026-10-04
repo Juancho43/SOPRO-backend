@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE daily_rituals (
 id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+user_id VARCHAR(128)  NOT NULL,
 ritual_date DATE NOT NULL,
 gratitude TEXT NOT NULL,
 goals JSONB NOT NULL,
