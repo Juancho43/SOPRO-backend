@@ -1,0 +1,184 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "SOPRO_CORE_ENGINE",
+        "title": "SOPRO_CORE",
+        "contact": {},
+        "version": "0.1"
+    },
+    "basePath": "/",
+    "paths": {
+        "/api/health": {
+            "get": {
+                "description": "Verifica que el motor del sistema esté en línea y operando a su máxima capacidad.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Sistema"
+                ],
+                "summary": "Comprueba la vitalidad del núcleo",
+                "responses": {
+                    "200": {
+                        "description": "Retorna un mensaje de victoria garantizada.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/login/google": {
+            "post": {
+                "description": "Gestiona el inicio de sesión o creación de cuenta. Requiere que el token de Firebase haya sido validado por el middleware.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Autenticación"
+                ],
+                "summary": "Autenticación maestra con Google",
+                "responses": {
+                    "200": {
+                        "description": "Login exitoso y datos del usuario.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno o usuario no encontrado en el contexto.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rituals": {
+            "get": {
+                "responses": {}
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Registra el agradecimiento y las 10 metas innegociables del día. Regla inquebrantable: Solo se permite uno por día calendario.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Ritual"
+                ],
+                "summary": "Crea tu ritual diario",
+                "parameters": [
+                    {
+                        "description": "Tu enfoque y gratitud del día",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.DailyRitualCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "¡Ritual completado! Tu enfoque está asegurado para hoy.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "La excelencia requiere precisión (faltan datos o no son 10 metas).",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin disciplina no hay resultados (No autorizado).",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Ya has forjado tu disciplina hoy.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rituals/today": {
+            "get": {
+                "responses": {}
+            }
+        }
+    },
+    "definitions": {
+        "usecases.DailyRitualCommand": {
+            "type": "object",
+            "properties": {
+                "goals": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "Finalizar la integración de pagos",
+                        "Leer 20 páginas de un libro",
+                        "Hacer 45 minutos de ejercicio"
+                    ]
+                },
+                "grateful_for": {
+                    "type": "string",
+                    "example": "Estoy agradecido por la oportunidad de crear sistemas increíbles hoy"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
+}

@@ -1,0 +1,126 @@
+basePath: /
+definitions:
+  usecases.DailyRitualCommand:
+    properties:
+      goals:
+        example:
+        - Finalizar la integración de pagos
+        - Leer 20 páginas de un libro
+        - Hacer 45 minutos de ejercicio
+        items:
+          type: string
+        type: array
+      grateful_for:
+        example: Estoy agradecido por la oportunidad de crear sistemas increíbles
+          hoy
+        type: string
+      user_id:
+        example: f47ac10b-58cc-4372-a567-0e02b2c3d479
+        type: string
+    type: object
+info:
+  contact: {}
+  description: SOPRO_CORE_ENGINE
+  title: SOPRO_CORE
+  version: "0.1"
+paths:
+  /api/health:
+    get:
+      description: Verifica que el motor del sistema esté en línea y operando a su
+        máxima capacidad.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Retorna un mensaje de victoria garantizada.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Comprueba la vitalidad del núcleo
+      tags:
+      - Sistema
+  /api/login/google:
+    post:
+      description: Gestiona el inicio de sesión o creación de cuenta. Requiere que
+        el token de Firebase haya sido validado por el middleware.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login exitoso y datos del usuario.
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Error interno o usuario no encontrado en el contexto.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Autenticación maestra con Google
+      tags:
+      - Autenticación
+  /api/rituals:
+    get:
+      responses: {}
+    post:
+      consumes:
+      - application/json
+      description: 'Registra el agradecimiento y las 10 metas innegociables del día.
+        Regla inquebrantable: Solo se permite uno por día calendario.'
+      parameters:
+      - description: Tu enfoque y gratitud del día
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.DailyRitualCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: ¡Ritual completado! Tu enfoque está asegurado para hoy.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: La excelencia requiere precisión (faltan datos o no son 10
+            metas).
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Sin disciplina no hay resultados (No autorizado).
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Ya has forjado tu disciplina hoy.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error interno del servidor.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Crea tu ritual diario
+      tags:
+      - Ritual
+  /api/rituals/today:
+    get:
+      responses: {}
+securityDefinitions:
+  BearerAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

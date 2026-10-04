@@ -1,6 +1,5 @@
 .env
 firebase-api.json
 app.log
-docs
 .idea
-.vendor
+vendor
