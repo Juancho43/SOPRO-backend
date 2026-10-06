@@ -16,8 +16,6 @@ func NewLoginUseCase(repo repositories.UserRepository) *LoginUseCase {
 }
 
 func (uc *LoginUseCase) Execute(user *entities.User) error {
-	//TODO: falla en obtener al user. cuando ya existe en la bd
-	//HACER Que sea getByEmail
 	fmt.Print("email", user.UID)
 	_, err := uc.repo.GetUser(user.UID)
 	if err != nil {

@@ -25,10 +25,11 @@ func (r *PostgresUserRepository) SaveUser(user *entities.User) error {
 	query := `
 		INSERT INTO users (firebase_uid, email) 
 		VALUES ($1, $2) 
-		RETURNING id, current_streak, max_streak, created_at, updated_at`
+		RETURNING firebase_uid, email, current_streak, max_streak, created_at, updated_at`
 
 	err := r.db.QueryRow(ctx, query, user.UID, user.Email).Scan(
 		&user.UID,
+		&user.Email,
 		&user.CurrentStreak,
 		&user.MaxStreak,
 		&user.CreatedAt,
@@ -49,7 +50,6 @@ func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	// Ahora el Scan recibe correctamente las 6 variables
 	err := r.db.QueryRow(ctx, query, uid).Scan(
 		&user.UID,
 		&user.Email,
@@ -60,7 +60,6 @@ func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	)
 
 	if err != nil {
-		// Validamos usando pgx.ErrNoRows
 		if errors.Is(err, pgx.ErrNoRows) {
 			return nil, errors.New("usuario no encontrado")
 		}

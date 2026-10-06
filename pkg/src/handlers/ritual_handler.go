@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
 	usecases "github.com/Juancho43/SOPRO-backend/pkg/internal/use_cases"
 	"github.com/Juancho43/SOPRO-backend/pkg/src/services"
 	"github.com/gin-gonic/gin"
@@ -75,15 +76,16 @@ func (h *RitualHandler) CreateRitual(c *gin.Context) {
 // @Failure 500 {object} map[string]string "Error interno del servidor."
 // @Router /api/rituals/today [get]
 func (h *RitualHandler) CheckTodayRitual(c *gin.Context) {
-	userID := c.GetString("user_id") // Extraído de tu middleware JWT
-	if userID == "" {
-		// Mock temporal por si aún no tienes el middleware conectado
-		userID = "default-user-id"
+	userObj, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Usuario no encontrado en el contexto"})
+		return
 	}
 
-	ritual, err := h.service.ExecuteGetTodayRitual(userID)
+	user, _ := userObj.(*entities.User)
+	ritual, err := h.service.ExecuteGetTodayRitual(user.UID)
 	if err != nil || ritual == false {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Aún no has forjado tu disciplina hoy."})
+		c.JSON(http.StatusOK, false)
 		return
 	}
 
