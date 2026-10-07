@@ -2,6 +2,7 @@ package usecases
 
 import (
 	"errors"
+	"strings"
 	"time"
 
 	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
@@ -34,6 +35,11 @@ type DailyRitualCommand struct {
 func (u *DailyRitual) CreateDailyRitual(command DailyRitualCommand) error {
 	if len(command.Goals) != 10 {
 		return errors.New("la excelencia requiere precisión: debes definir exactamente 10 metas")
+	}
+	for _, goal := range command.Goals {
+		if strings.TrimSpace(goal) == "" {
+			return errors.New("la claridad es el punto de partida del éxito: ninguna de tus 10 metas puede estar vacía")
+		}
 	}
 	if command.GratefulFor == "" {
 		return errors.New("la gratitud es el punto de partida: el agradecimiento no puede estar vacío")
