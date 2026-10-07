@@ -30,16 +30,13 @@ func (h *RitualHandler) SetRoutes(router *gin.Engine, authMiddleware gin.Handler
 //
 // @Summary Crea tu ritual diario
 // @Description Registra el agradecimiento y las 10 metas innegociables del día. Regla inquebrantable: Solo se permite uno por día calendario.
-// @Tags Ritual
+// @Tags Rituals
 // @Accept json
 // @Produce json
 // @Security BearerAuth
 // @Param request body usecases.DailyRitualCommand true "Tu enfoque y gratitud del día"
 // @Success 201 {object} map[string]string "¡Ritual completado! Tu enfoque está asegurado para hoy."
-// @Failure 400 {object} map[string]string "La excelencia requiere precisión (faltan datos o no son 10 metas)."
 // @Failure 401 {object} map[string]string "Sin disciplina no hay resultados (No autorizado)."
-// @Failure 409 {object} map[string]string "Ya has forjado tu disciplina hoy."
-// @Failure 500 {object} map[string]string "Error interno del servidor."
 // @Router /api/rituals [post]
 func (h *RitualHandler) CreateRitual(c *gin.Context) {
 	var cmd usecases.DailyRitualCommand
@@ -67,13 +64,10 @@ func (h *RitualHandler) CreateRitual(c *gin.Context) {
 // CheckTodayRitual	godoc
 // @Summary Verifica y obtiene el ritual de hoy
 // @Description Retorna el agradecimiento y las metas establecidas para el día actual si ya fue creado.
-// @Tags Ritual
+// @Tags Rituals
 // @Produce json
 // @Security BearerAuth
 // @Success 200 {object} bool "Ritual del día obtenido con éxito."
-// @Failure 401 {object} map[string]string "No autorizado."
-// @Failure 404 {object} map[string]string "Aún no has forjado tu disciplina hoy."
-// @Failure 500 {object} map[string]string "Error interno del servidor."
 // @Router /api/rituals/today [get]
 func (h *RitualHandler) CheckTodayRitual(c *gin.Context) {
 	userObj, exists := c.Get("user")

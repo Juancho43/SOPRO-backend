@@ -20,7 +20,7 @@ func (h *HealtHandler) SetRoutes(router *gin.Engine) {
 // Health godoc
 // @Summary Comprueba la vitalidad del núcleo
 // @Description Verifica que el motor del sistema esté en línea y operando a su máxima capacidad.
-// @Tags Sistema
+// @Tags System
 // @Produce json
 // @Success 200 {object} map[string]string "Retorna un mensaje de victoria garantizada."
 // @Router /api/health [get]

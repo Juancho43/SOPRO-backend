@@ -1,5 +1,32 @@
 basePath: /
 definitions:
+  entities.HabitFrequency:
+    enum:
+    - diario
+    - semanal
+    type: string
+    x-enum-varnames:
+    - Daily
+    - Weekly
+  entities.HabitStreak:
+    properties:
+      createdAt:
+        type: string
+      currentStreak:
+        type: integer
+      frequency:
+        $ref: '#/definitions/entities.HabitFrequency'
+      habitName:
+        type: string
+      id:
+        type: string
+      maxStreak:
+        type: integer
+      updatedAt:
+        type: string
+      userID:
+        type: string
+    type: object
   entities.Ritual:
     properties:
       agradecimiento:
@@ -20,7 +47,7 @@ definitions:
     type: object
   usecases.DailyRitualCommand:
     properties:
-      goals:
+      Goals:
         example:
         - Finalizar la integración de pagos
         - Leer 20 páginas de un libro
@@ -28,7 +55,7 @@ definitions:
         items:
           type: string
         type: array
-      grateful_for:
+      GratefulFor:
         example: Estoy agradecido por la oportunidad de crear sistemas increíbles
           hoy
         type: string
@@ -57,7 +84,7 @@ paths:
             type: object
       summary: Comprueba la vitalidad del núcleo
       tags:
-      - Sistema
+      - System
   /api/login/google:
     post:
       description: Gestiona el inicio de sesión o creación de cuenta. Requiere que
@@ -78,7 +105,7 @@ paths:
             type: object
       summary: Autenticación maestra con Google
       tags:
-      - Autenticación
+      - Auht
   /api/rituals:
     get:
       description: Devuelve la lista histórica de todos los rituales diarios forjados
@@ -124,27 +151,8 @@ paths:
             additionalProperties:
               type: string
             type: object
-        "400":
-          description: La excelencia requiere precisión (faltan datos o no son 10
-            metas).
-          schema:
-            additionalProperties:
-              type: string
-            type: object
         "401":
           description: Sin disciplina no hay resultados (No autorizado).
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "409":
-          description: Ya has forjado tu disciplina hoy.
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Error interno del servidor.
           schema:
             additionalProperties:
               type: string
@@ -153,7 +161,7 @@ paths:
       - BearerAuth: []
       summary: Crea tu ritual diario
       tags:
-      - Ritual
+      - Rituals
   /api/rituals/today:
     get:
       description: Retorna el agradecimiento y las metas establecidas para el día
@@ -165,29 +173,35 @@ paths:
           description: Ritual del día obtenido con éxito.
           schema:
             type: boolean
-        "401":
-          description: No autorizado.
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: Aún no has forjado tu disciplina hoy.
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Error interno del servidor.
-          schema:
-            additionalProperties:
-              type: string
-            type: object
       security:
       - BearerAuth: []
       summary: Verifica y obtiene el ritual de hoy
       tags:
-      - Ritual
+      - Rituals
+  /api/streaks/habit/{habitName}:
+    get:
+      consumes:
+      - application/json
+      description: Recupera la inercia actual y máxima de un hábito para medir tu
+        nivel de disciplina.
+      parameters:
+      - description: Nombre del hábito (ej. Programacion)
+        in: path
+        name: habitName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: El estado actual de tu disciplina
+          schema:
+            $ref: '#/definitions/entities.HabitStreak'
+      security:
+      - BearerAuth: []
+      summary: Obtener la racha de un hábito específico
+      tags:
+      - Streaks
 securityDefinitions:
   BearerAuth:
     in: header

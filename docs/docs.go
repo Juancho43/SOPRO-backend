@@ -22,7 +22,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Sistema"
+                    "System"
                 ],
                 "summary": "Comprueba la vitalidad del núcleo",
                 "responses": {
@@ -45,7 +45,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Autenticación"
+                    "Auht"
                 ],
                 "summary": "Autenticación maestra con Google",
                 "responses": {
@@ -118,7 +118,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ritual"
+                    "Rituals"
                 ],
                 "summary": "Crea tu ritual diario",
                 "parameters": [
@@ -142,35 +142,8 @@ const docTemplate = `{
                             }
                         }
                     },
-                    "400": {
-                        "description": "La excelencia requiere precisión (faltan datos o no son 10 metas).",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
                     "401": {
                         "description": "Sin disciplina no hay resultados (No autorizado).",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "Ya has forjado tu disciplina hoy.",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error interno del servidor.",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -193,7 +166,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Ritual"
+                    "Rituals"
                 ],
                 "summary": "Verifica y obtiene el ritual de hoy",
                 "responses": {
@@ -202,32 +175,42 @@ const docTemplate = `{
                         "schema": {
                             "type": "boolean"
                         }
-                    },
-                    "401": {
-                        "description": "No autorizado.",
+                    }
+                }
+            }
+        },
+        "/api/streaks/habit/{habitName}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera la inercia actual y máxima de un hábito para medir tu nivel de disciplina.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Streaks"
+                ],
+                "summary": "Obtener la racha de un hábito específico",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nombre del hábito (ej. Programacion)",
+                        "name": "habitName",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "El estado actual de tu disciplina",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Aún no has forjado tu disciplina hoy.",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Error interno del servidor.",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/entities.HabitStreak"
                         }
                     }
                 }
@@ -235,6 +218,46 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entities.HabitFrequency": {
+            "type": "string",
+            "enum": [
+                "diario",
+                "semanal"
+            ],
+            "x-enum-varnames": [
+                "Daily",
+                "Weekly"
+            ]
+        },
+        "entities.HabitStreak": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "currentStreak": {
+                    "type": "integer"
+                },
+                "frequency": {
+                    "$ref": "#/definitions/entities.HabitFrequency"
+                },
+                "habitName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "maxStreak": {
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "type": "string"
+                },
+                "userID": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.Ritual": {
             "type": "object",
             "properties": {
@@ -265,7 +288,7 @@ const docTemplate = `{
         "usecases.DailyRitualCommand": {
             "type": "object",
             "properties": {
-                "goals": {
+                "Goals": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -276,7 +299,7 @@ const docTemplate = `{
                         "Hacer 45 minutos de ejercicio"
                     ]
                 },
-                "grateful_for": {
+                "GratefulFor": {
                     "type": "string",
                     "example": "Estoy agradecido por la oportunidad de crear sistemas increíbles hoy"
                 },

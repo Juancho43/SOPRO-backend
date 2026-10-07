@@ -23,7 +23,7 @@ func (h *AuthHandler) SetRoutes(router *gin.Engine, authMiddleware gin.HandlerFu
 // GoogleLogin godoc
 // @Summary Autenticación maestra con Google
 // @Description Gestiona el inicio de sesión o creación de cuenta. Requiere que el token de Firebase haya sido validado por el middleware.
-// @Tags Autenticación
+// @Tags Auht
 // @Produce json
 // @Success 200 {object} map[string]interface{} "Login exitoso y datos del usuario."
 // @Failure 500 {object} map[string]string "Error interno o usuario no encontrado en el contexto."
