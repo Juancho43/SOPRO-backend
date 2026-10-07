@@ -19,4 +19,5 @@ func InjectAll(app *core.Core) {
 	HealthModule(app.Router)
 	AuthModule(app, middleware)
 	RitualModule(app, middleware)
+	StreakModule(app, middleware)
 }

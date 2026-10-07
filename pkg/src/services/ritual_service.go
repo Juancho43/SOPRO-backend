@@ -4,19 +4,27 @@ import (
 	"log/slog"
 
 	usecases "github.com/Juancho43/SOPRO-backend/pkg/internal/use_cases"
+	"github.com/Juancho43/SOPRO-backend/pkg/src/bus"
 )
 
 type RitualService struct {
 	dailyRitual  *usecases.DailyRitual
 	todaysRitual *usecases.TodaysRitual
 	logger       *slog.Logger
+	eventBus     bus.EventBus
 }
 
-func NewRitualService(dailyRitual *usecases.DailyRitual, todaysRitual *usecases.TodaysRitual, logger *slog.Logger) *RitualService {
+func NewRitualService(
+	dailyRitual *usecases.DailyRitual,
+	todaysRitual *usecases.TodaysRitual,
+	logger *slog.Logger,
+	bus bus.EventBus,
+) *RitualService {
 	return &RitualService{
 		dailyRitual:  dailyRitual,
 		todaysRitual: todaysRitual,
 		logger:       logger,
+		eventBus:     bus,
 	}
 }
 
@@ -33,6 +41,7 @@ func (s *RitualService) ExecuteDailyRitual(command usecases.DailyRitualCommand) 
 	}
 
 	s.logger.Info("Ritual diario creado con éxito", slog.String("user_id", command.UserID))
+	s.eventBus.Publish("ritual.completed", command)
 	return nil
 }
 
