@@ -25,13 +25,11 @@ func (r *PostgresUserRepository) SaveUser(user *entities.User) error {
 	query := `
 		INSERT INTO users (firebase_uid, email) 
 		VALUES ($1, $2) 
-		RETURNING firebase_uid, email, current_streak, max_streak, created_at, updated_at`
+		RETURNING firebase_uid, email, created_at, updated_at`
 
 	err := r.db.QueryRow(ctx, query, user.UID, user.Email).Scan(
 		&user.UID,
 		&user.Email,
-		&user.CurrentStreak,
-		&user.MaxStreak,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
@@ -41,7 +39,7 @@ func (r *PostgresUserRepository) SaveUser(user *entities.User) error {
 
 func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	query := `
-		SELECT firebase_uid, email, current_streak, max_streak, created_at, updated_at 
+		SELECT firebase_uid, email, created_at, updated_at 
 		FROM users 
 		WHERE firebase_uid = $1`
 	fmt.Print("id a buscar", uid)
@@ -53,8 +51,6 @@ func (r *PostgresUserRepository) GetUser(uid string) (*entities.User, error) {
 	err := r.db.QueryRow(ctx, query, uid).Scan(
 		&user.UID,
 		&user.Email,
-		&user.CurrentStreak,
-		&user.MaxStreak,
 		&user.CreatedAt,
 		&user.UpdatedAt,
 	)
