@@ -3,28 +3,32 @@ package services
 import (
 	"log/slog"
 
+	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/entities"
 	usecases "github.com/Juancho43/SOPRO-backend/pkg/internal/use_cases"
 	"github.com/Juancho43/SOPRO-backend/pkg/src/bus"
 )
 
 type RitualService struct {
-	dailyRitual  *usecases.DailyRitual
-	todaysRitual *usecases.TodaysRitual
-	logger       *slog.Logger
-	eventBus     bus.EventBus
+	dailyRitual     *usecases.DailyRitual
+	todaysRitual    *usecases.TodaysRitual
+	getRitualByDate *usecases.GetRitualByDate
+	logger          *slog.Logger
+	eventBus        bus.EventBus
 }
 
 func NewRitualService(
 	dailyRitual *usecases.DailyRitual,
 	todaysRitual *usecases.TodaysRitual,
+	getRitualByDate *usecases.GetRitualByDate,
 	logger *slog.Logger,
 	bus bus.EventBus,
 ) *RitualService {
 	return &RitualService{
-		dailyRitual:  dailyRitual,
-		todaysRitual: todaysRitual,
-		logger:       logger,
-		eventBus:     bus,
+		dailyRitual:     dailyRitual,
+		todaysRitual:    todaysRitual,
+		getRitualByDate: getRitualByDate,
+		logger:          logger,
+		eventBus:        bus,
 	}
 }
 
@@ -55,6 +59,24 @@ func (s *RitualService) ExecuteGetTodayRitual(userID string) (bool, error) {
 			slog.String("user_id", userID),
 		)
 		return false, err
+	}
+
+	s.logger.Info("Ritual de hoy obtenido con éxito", slog.String("user_id", userID))
+
+	return ritual, nil
+}
+
+func (s *RitualService) ExecuteGetRitualByDate(userID string, date string) (*entities.Ritual, error) {
+	s.logger.Info("Consultando ritual por fecha", slog.String("user_id", userID), slog.String("date", date))
+
+	ritual, err := s.getRitualByDate.Execute(userID, date)
+	if err != nil {
+		s.logger.Error("Error al obtener el ritual por fecha",
+			slog.String("error", err.Error()),
+			slog.String("user_id", userID),
+			slog.String("date", date),
+		)
+		return nil, err
 	}
 
 	return ritual, nil
