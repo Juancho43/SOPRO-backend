@@ -11,7 +11,7 @@ import (
 
 func StreakModule(app *core.Core, authMiddleware gin.HandlerFunc) {
 	repo := postgress.NewPostgresHabitStreakRepository(app.Database)
-	markAsDone := usecases.NewMarkHabitAsDone(repo)
+	markAsDone, _ := usecases.NewMarkHabitAsDone(repo, app.Config.Timezone)
 	getHabit := usecases.NewGetHabitStreak(repo)
 	service := services.NewStreakService(markAsDone, getHabit, app.Logger)
 	handler := handlers.NewStreakHandler(service)

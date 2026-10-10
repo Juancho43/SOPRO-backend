@@ -28,8 +28,8 @@ func NewDailyRitual(repo repositories.RitualRepository, timezoneStr string) (*Da
 
 type DailyRitualCommand struct {
 	UserID      string   `json:"user_id" example:"f47ac10b-58cc-4372-a567-0e02b2c3d479"`
-	GratefulFor string   `json:"GratefulFor" example:"Estoy agradecido por la oportunidad de crear sistemas increíbles hoy"`
-	Goals       []string `json:"Goals" example:"Finalizar la integración de pagos,Leer 20 páginas de un libro,Hacer 45 minutos de ejercicio"`
+	GratefulFor string   `json:"grateful_for" example:"Estoy agradecido por la oportunidad de crear sistemas increíbles hoy"`
+	Goals       []string `json:"goals" example:"Finalizar la integración de pagos,Leer 20 páginas de un libro,Hacer 45 minutos de ejercicio"`
 }
 
 func (u *DailyRitual) CreateDailyRitual(command DailyRitualCommand) error {

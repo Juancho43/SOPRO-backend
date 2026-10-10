@@ -8,53 +8,71 @@ import (
 	"github.com/Juancho43/SOPRO-backend/pkg/internal/model/repositories"
 )
 
-// MarkHabitAsDone orquesta la victoria diaria sobre un hábito específico.
 type MarkHabitAsDone struct {
 	streakRepo repositories.HabitStreakRepository
+	location   *time.Location
 }
 
-func NewMarkHabitAsDone(repo repositories.HabitStreakRepository) *MarkHabitAsDone {
+// Inyectamos el timezone string exacto (ej. "America/Buenos_Aires") para mantener la consistencia
+func NewMarkHabitAsDone(repo repositories.HabitStreakRepository, timezoneStr string) (*MarkHabitAsDone, error) {
+	loc, err := time.LoadLocation(timezoneStr)
+	if err != nil {
+		return nil, errors.New("error al cargar la zona horaria: " + err.Error())
+	}
+
 	return &MarkHabitAsDone{
 		streakRepo: repo,
-	}
+		location:   loc,
+	}, nil
 }
 
-// Execute registra la ejecución del hábito, incrementa la inercia y notifica al sistema.
 func (uc *MarkHabitAsDone) Execute(userID string, habitName string, now time.Time) error {
-	// 1. Claridad de propósito.
 	if habitName == "" {
 		return errors.New("la claridad es esencial: el nombre del hábito no puede estar vacío")
 	}
 
-	// 2. Evaluar el estado actual de la disciplina.
+	// 1. Alinear el tiempo de ejecución a la zona horaria de tu comando central
+	localNow := now.In(uc.location)
+
 	streak, err := uc.streakRepo.GetByUserIDAndHabit(userID, habitName)
 	if err != nil {
 		return err
 	}
 
 	if streak == nil {
-		// El inicio de un nuevo estándar. Se establece la marca en 1.
 		streak = &entities.HabitStreak{
 			UserID:        userID,
 			HabitName:     habitName,
-			Frequency:     "diario",
+			Frequency:     entities.Daily,
 			CurrentStreak: 1,
 			MaxStreak:     1,
-			CreatedAt:     now,
-			UpdatedAt:     now,
+			CreatedAt:     localNow,
+			UpdatedAt:     localNow,
 		}
 	} else {
-		// Mantener el fuego vivo. Se acumula la inercia.
-		streak.CurrentStreak++
+		// 2. Alinear la última actualización a la misma zona horaria antes de evaluar
+		lastUpdate := streak.UpdatedAt.In(uc.location)
 
-		// Romper los propios límites: si la racha actual supera la histórica, se actualiza el récord.
-		if streak.CurrentStreak > streak.MaxStreak {
-			streak.MaxStreak = streak.CurrentStreak
+		// 3. Evaluar el paso del tiempo usando estrictamente la ubicación definida
+		lastDate := time.Date(lastUpdate.Year(), lastUpdate.Month(), lastUpdate.Day(), 0, 0, 0, 0, uc.location)
+		todayDate := time.Date(localNow.Year(), localNow.Month(), localNow.Day(), 0, 0, 0, 0, uc.location)
+
+		daysDifference := int(todayDate.Sub(lastDate).Hours() / 24)
+
+		if daysDifference == 0 {
+			return errors.New("ya has forjado tu disciplina hoy; ahora enfócate en ejecutar")
+		} else if daysDifference == 1 {
+			streak.CurrentStreak++
+			if streak.CurrentStreak > streak.MaxStreak {
+				streak.MaxStreak = streak.CurrentStreak
+			}
+		} else {
+			streak.CurrentStreak = 1
 		}
-		streak.UpdatedAt = now
+
+		streak.UpdatedAt = localNow
 	}
 
-	// 3. Consolidar el avance en la base de datos.
 	if err := uc.streakRepo.Save(streak); err != nil {
 		return err
 	}

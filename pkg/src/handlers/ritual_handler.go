@@ -22,7 +22,7 @@ func (h *RitualHandler) SetRoutes(router *gin.Engine, authMiddleware gin.Handler
 	{
 		rituals.POST("", h.CreateRitual)
 		rituals.GET("/today", h.CheckTodayRitual)
-		rituals.GET("/by-date", h.GetRitualByDate)
+		rituals.GET("/:date", h.GetRitualByDate)
 	}
 }
 
@@ -106,7 +106,7 @@ func (h *RitualHandler) GetRitualByDate(c *gin.Context) {
 	}
 	user, _ := userObj.(*entities.User)
 
-	dateParam := c.Query("date")
+	dateParam := c.Param("date")
 
 	if dateParam == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "La claridad es poder: El parámetro 'date' es requerido (ej. ?date=2026-10-07)"})
