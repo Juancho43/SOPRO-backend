@@ -22,7 +22,7 @@ func (h *RitualHandler) SetRoutes(router *gin.Engine, authMiddleware gin.Handler
 	{
 		rituals.POST("", h.CreateRitual)
 		rituals.GET("/today", h.CheckTodayRitual)
-		rituals.GET("", h.GetRitualsHistory)
+		rituals.GET("/by-date", h.GetRitualByDate)
 	}
 }
 
@@ -86,16 +86,38 @@ func (h *RitualHandler) CheckTodayRitual(c *gin.Context) {
 	c.JSON(http.StatusOK, ritual)
 }
 
-// GetRitualsHistory godoc
-// @Summary Obtiene el historial de rituales
-// @Description Devuelve la lista histórica de todos los rituales diarios forjados por el usuario.
-// @Tags Ritual
+// GetRitualByDate godoc
+// @Summary Obtiene un ritual por fecha específica
+// @Description Devuelve el ritual registrado en una fecha enviada como query param (ej. ?date=YYYY-MM-DD).
+// @Tags Rituals
 // @Produce json
 // @Security BearerAuth
-// @Success 200 {array} entities.Ritual "Historial obtenido con éxito."
+// @Param date query string true "Fecha del ritual en formato YYYY-MM-DD"
+// @Success 200 {object} entities.Ritual "Ritual obtenido con éxito."
+// @Failure 400 {object} map[string]string "El parámetro date es requerido."
 // @Failure 401 {object} map[string]string "No autorizado."
-// @Router /api/rituals [get]
-func (h *RitualHandler) GetRitualsHistory(c *gin.Context) {
-	// Aquí conectarías el servicio para obtener el historial completo
-	c.JSON(http.StatusOK, gin.H{"message": "El éxito deja huellas: Historial en construcción."})
+// @Failure 404 {object} map[string]string "Ritual no encontrado."
+// @Router /api/rituals/by-date [get]
+func (h *RitualHandler) GetRitualByDate(c *gin.Context) {
+	userObj, exists := c.Get("user")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Usuario no encontrado en el contexto"})
+		return
+	}
+	user, _ := userObj.(*entities.User)
+
+	dateParam := c.Query("date")
+
+	if dateParam == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "La claridad es poder: El parámetro 'date' es requerido (ej. ?date=2026-10-07)"})
+		return
+	}
+
+	ritual, err := h.service.ExecuteGetRitualByDate(user.UID, dateParam)
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "No se encontraron registros para esta fecha. El éxito requiere acción continua."})
+		return
+	}
+
+	c.JSON(http.StatusOK, ritual)
 }
