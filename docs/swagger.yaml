@@ -1,5 +1,17 @@
 basePath: /
 definitions:
+  entities.FocusmateSession:
+    properties:
+      end_time:
+        type: string
+      id:
+        type: string
+      start_time:
+        type: string
+      status:
+        description: ej. "upcoming"
+        type: string
+    type: object
   entities.HabitFrequency:
     enum:
     - diario
@@ -29,25 +41,24 @@ definitions:
     type: object
   entities.Ritual:
     properties:
-      agradecimiento:
-        type: string
-      createdAt:
+      created_at:
         type: string
       date:
         type: string
-      id:
-        type: string
-      metas:
-        description: 'El éxito exige enfoque: exactamente 10 metas'
+      goals:
         items:
           type: string
         type: array
-      userID:
+      grateful_for:
+        type: string
+      id:
+        type: string
+      user_id:
         type: string
     type: object
   usecases.DailyRitualCommand:
     properties:
-      Goals:
+      goals:
         example:
         - Finalizar la integración de pagos
         - Leer 20 páginas de un libro
@@ -55,7 +66,7 @@ definitions:
         items:
           type: string
         type: array
-      GratefulFor:
+      grateful_for:
         example: Estoy agradecido por la oportunidad de crear sistemas increíbles
           hoy
         type: string
@@ -69,6 +80,29 @@ info:
   title: SOPRO_CORE
   version: "0.1"
 paths:
+  /api/focusmate/sessions/future:
+    get:
+      description: Retorna la lista de bloques de tiempo de alta concentración programados.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Sesiones obtenidas con éxito.
+          schema:
+            items:
+              $ref: '#/definitions/entities.FocusmateSession'
+            type: array
+        "500":
+          description: Error interno al contactar la API.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Obtiene todas las sesiones futuras de Focusmate
+      tags:
+      - Focusmate
   /api/health:
     get:
       description: Verifica que el motor del sistema esté en línea y operando a su
@@ -107,29 +141,6 @@ paths:
       tags:
       - Auht
   /api/rituals:
-    get:
-      description: Devuelve la lista histórica de todos los rituales diarios forjados
-        por el usuario.
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Historial obtenido con éxito.
-          schema:
-            items:
-              $ref: '#/definitions/entities.Ritual'
-            type: array
-        "401":
-          description: No autorizado.
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Obtiene el historial de rituales
-      tags:
-      - Ritual
     post:
       consumes:
       - application/json
@@ -160,6 +171,46 @@ paths:
       security:
       - BearerAuth: []
       summary: Crea tu ritual diario
+      tags:
+      - Rituals
+  /api/rituals/by-date:
+    get:
+      description: Devuelve el ritual registrado en una fecha enviada como query param
+        (ej. ?date=YYYY-MM-DD).
+      parameters:
+      - description: Fecha del ritual en formato YYYY-MM-DD
+        in: query
+        name: date
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Ritual obtenido con éxito.
+          schema:
+            $ref: '#/definitions/entities.Ritual'
+        "400":
+          description: El parámetro date es requerido.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: No autorizado.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Ritual no encontrado.
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Obtiene un ritual por fecha específica
       tags:
       - Rituals
   /api/rituals/today:

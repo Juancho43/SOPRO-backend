@@ -15,6 +15,43 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/api/focusmate/sessions/future": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna la lista de bloques de tiempo de alta concentración programados.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Focusmate"
+                ],
+                "summary": "Obtiene todas las sesiones futuras de Focusmate",
+                "responses": {
+                    "200": {
+                        "description": "Sesiones obtenidas con éxito.",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.FocusmateSession"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al contactar la API.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/health": {
             "get": {
                 "description": "Verifica que el motor del sistema esté en línea y operando a su máxima capacidad.",
@@ -69,41 +106,6 @@ const docTemplate = `{
             }
         },
         "/api/rituals": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Devuelve la lista histórica de todos los rituales diarios forjados por el usuario.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Ritual"
-                ],
-                "summary": "Obtiene el historial de rituales",
-                "responses": {
-                    "200": {
-                        "description": "Historial obtenido con éxito.",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/entities.Ritual"
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "No autorizado.",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                }
-            },
             "post": {
                 "security": [
                     {
@@ -144,6 +146,67 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Sin disciplina no hay resultados (No autorizado).",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rituals/by-date": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Devuelve el ritual registrado en una fecha enviada como query param (ej. ?date=YYYY-MM-DD).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rituals"
+                ],
+                "summary": "Obtiene un ritual por fecha específica",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Fecha del ritual en formato YYYY-MM-DD",
+                        "name": "date",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ritual obtenido con éxito.",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Ritual"
+                        }
+                    },
+                    "400": {
+                        "description": "El parámetro date es requerido.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No autorizado.",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Ritual no encontrado.",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -218,6 +281,24 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "entities.FocusmateSession": {
+            "type": "object",
+            "properties": {
+                "end_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                },
+                "status": {
+                    "description": "ej. \"upcoming\"",
+                    "type": "string"
+                }
+            }
+        },
         "entities.HabitFrequency": {
             "type": "string",
             "enum": [
@@ -261,26 +342,25 @@ const docTemplate = `{
         "entities.Ritual": {
             "type": "object",
             "properties": {
-                "agradecimiento": {
-                    "type": "string"
-                },
-                "createdAt": {
+                "created_at": {
                     "type": "string"
                 },
                 "date": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "string"
-                },
-                "metas": {
-                    "description": "El éxito exige enfoque: exactamente 10 metas",
+                "goals": {
                     "type": "array",
                     "items": {
                         "type": "string"
                     }
                 },
-                "userID": {
+                "grateful_for": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -288,7 +368,7 @@ const docTemplate = `{
         "usecases.DailyRitualCommand": {
             "type": "object",
             "properties": {
-                "Goals": {
+                "goals": {
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -299,7 +379,7 @@ const docTemplate = `{
                         "Hacer 45 minutos de ejercicio"
                     ]
                 },
-                "GratefulFor": {
+                "grateful_for": {
                     "type": "string",
                     "example": "Estoy agradecido por la oportunidad de crear sistemas increíbles hoy"
                 },

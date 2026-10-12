@@ -20,4 +20,5 @@ func InjectAll(app *core.Core) {
 	AuthModule(app, middleware)
 	RitualModule(app, middleware)
 	StreakModule(app, middleware)
+	SessionsModule(app, middleware)
 }
