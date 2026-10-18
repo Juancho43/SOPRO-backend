@@ -6,7 +6,6 @@ ritual_date DATE NOT NULL,
 gratitude TEXT NOT NULL,
 goals JSONB NOT NULL,
 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
--- Regla inquebrantable: Solo un ritual por día calendario
 CONSTRAINT unique_user_daily_ritual UNIQUE (user_id, ritual_date)
 );
 
