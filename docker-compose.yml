@@ -27,9 +27,6 @@ services:
     depends_on:
       - postgres
     command: go run main.go
-    dns:
-      - 8.8.8.8
-      - 1.1.1.1
 
 volumes:
   pgdata:
