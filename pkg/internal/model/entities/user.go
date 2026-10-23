@@ -7,8 +7,6 @@ type User struct {
 	Email string
 	Name  string
 
-	CurrentStreak int
-	MaxStreak     int
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
