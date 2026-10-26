@@ -6,9 +6,15 @@ import (
 )
 
 // SetupEventSubscriptions forja la alianza entre tus módulos independientes.
-func SetupEventSubscriptions(streakService *services.StreakService) {
+func SetupEventSubscriptions(streakService *services.StreakService, trophyService *services.TrophyService) {
 	eventBus := bus.GetInstance()
 
-	eventBus.Subscribe("ritual.completed", streakService.OnRitualCompleted)
+	if streakService != nil {
+		eventBus.Subscribe("ritual.completed", streakService.OnRitualCompleted)
+	}
 
+	if trophyService != nil {
+		eventBus.Subscribe("ritual.completed", trophyService.OnRitualCompleted)
+		eventBus.Subscribe("habit.completed", trophyService.OnHabitCompleted)
+	}
 }

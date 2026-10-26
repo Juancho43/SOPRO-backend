@@ -9,12 +9,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StreakModule(app *core.Core, authMiddleware gin.HandlerFunc) {
+func StreakModule(app *core.Core, authMiddleware gin.HandlerFunc) *services.StreakService {
 	repo := postgress.NewPostgresHabitStreakRepository(app.Database)
 	markAsDone, _ := usecases.NewMarkHabitAsDone(repo, app.Config.Timezone)
 	getHabit := usecases.NewGetHabitStreak(repo)
 	service := services.NewStreakService(markAsDone, getHabit, app.Logger)
 	handler := handlers.NewStreakHandler(service)
 	handler.SetRoutes(app.Router, authMiddleware)
-	SetupEventSubscriptions(service)
+	return service
 }

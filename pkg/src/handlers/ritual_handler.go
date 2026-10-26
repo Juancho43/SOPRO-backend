@@ -88,16 +88,16 @@ func (h *RitualHandler) CheckTodayRitual(c *gin.Context) {
 
 // GetRitualByDate godoc
 // @Summary Obtiene un ritual por fecha específica
-// @Description Devuelve el ritual registrado en una fecha enviada como query param (ej. ?date=YYYY-MM-DD).
+// @Description Devuelve el ritual registrado en una fecha enviada en la url (ej. /api/rituals/2026-10-07).
 // @Tags Rituals
 // @Produce json
 // @Security BearerAuth
-// @Param date query string true "Fecha del ritual en formato YYYY-MM-DD"
+// @Param date path string true "Fecha del ritual en formato YYYY-MM-DD"
 // @Success 200 {object} entities.Ritual "Ritual obtenido con éxito."
 // @Failure 400 {object} map[string]string "El parámetro date es requerido."
 // @Failure 401 {object} map[string]string "No autorizado."
 // @Failure 404 {object} map[string]string "Ritual no encontrado."
-// @Router /api/rituals/by-date [get]
+// @Router /api/rituals/{date} [get]
 func (h *RitualHandler) GetRitualByDate(c *gin.Context) {
 	userObj, exists := c.Get("user")
 	if !exists {
