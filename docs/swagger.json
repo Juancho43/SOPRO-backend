@@ -8,6 +8,199 @@
     },
     "basePath": "/",
     "paths": {
+        "/api/domains": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Recupera los dominios configurados con el recuento de hábitos asociados",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Listar dominios de excelencia del usuario",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.DomainWithHabitCount"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permite categorizar áreas de desarrollo personal con paleta de color personalizada",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Crear un dominio de excelencia",
+                "parameters": [
+                    {
+                        "description": "Datos del dominio",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.CreateDomainCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Domain"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/domains/radar": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna el esfuerzo agregado de los últimos 7 días por dominio para graficar en radar",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Métricas de radar semanal por dominio",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.DomainEffortPoint"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/domains/{id}": {
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Actualizar un dominio de excelencia",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del dominio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos a actualizar",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.UpdateDomainCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Domains"
+                ],
+                "summary": "Eliminar un dominio de excelencia",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del dominio",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/focusmate/sessions/future": {
             "get": {
                 "security": [
@@ -38,6 +231,169 @@
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/habits": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna los hábitos activos del usuario, sus rachas y si ya fueron completados hoy",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Habits"
+                ],
+                "summary": "Listar hábitos del arsenal con rachas",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.HabitWithStreak"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permite registrar un hábito individual con frecuencia diaria o semanal y dominio opcional",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Habits"
+                ],
+                "summary": "Crear un nuevo hábito en el arsenal",
+                "parameters": [
+                    {
+                        "description": "Datos del hábito",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.CreateHabitCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Habit"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/habits/{id}/check-in": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Marca el hábito como completado hoy, recalcula racha y emite evento de gamificación",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Habits"
+                ],
+                "summary": "Registrar cumplimiento diario de un hábito",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del hábito",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.HabitCheckInResult"
+                        }
+                    },
+                    "404": {
+                        "description": "Hábito no encontrado",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Ya registrado hoy",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/habits/{id}/history": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna las fechas (YYYY-MM-DD) de cumplimiento de los últimos 365 días",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Habits"
+                ],
+                "summary": "Historial de cumplimiento para mapa de calor",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del hábito",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
                                 "type": "string"
                             }
                         }
@@ -149,14 +505,39 @@
                 }
             }
         },
-        "/api/rituals/by-date": {
+        "/api/rituals/today": {
             "get": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Devuelve el ritual registrado en una fecha enviada como query param (ej. ?date=YYYY-MM-DD).",
+                "description": "Retorna el agradecimiento y las metas establecidas para el día actual si ya fue creado.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Rituals"
+                ],
+                "summary": "Verifica y obtiene el ritual de hoy",
+                "responses": {
+                    "200": {
+                        "description": "Ritual del día obtenido con éxito.",
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rituals/{date}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Devuelve el ritual registrado en una fecha enviada en la url (ej. /api/rituals/2026-10-07).",
                 "produces": [
                     "application/json"
                 ],
@@ -169,7 +550,7 @@
                         "type": "string",
                         "description": "Fecha del ritual en formato YYYY-MM-DD",
                         "name": "date",
-                        "in": "query",
+                        "in": "path",
                         "required": true
                     }
                 ],
@@ -205,31 +586,6 @@
                             "additionalProperties": {
                                 "type": "string"
                             }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/rituals/today": {
-            "get": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Retorna el agradecimiento y las metas establecidas para el día actual si ya fue creado.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Rituals"
-                ],
-                "summary": "Verifica y obtiene el ritual de hoy",
-                "responses": {
-                    "200": {
-                        "description": "Ritual del día obtenido con éxito.",
-                        "schema": {
-                            "type": "boolean"
                         }
                     }
                 }
@@ -271,9 +627,767 @@
                     }
                 }
             }
+        },
+        "/api/trophies": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trophies"
+                ],
+                "summary": "Listar trofeos creados",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Trophy"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permite definir trofeos simples vinculados a hábitos o racha maestra, o trofeos de sinergia multihábito (AND)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trophies"
+                ],
+                "summary": "Diseñar un nuevo trofeo o logro",
+                "parameters": [
+                    {
+                        "description": "Definición del trofeo",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.CreateTrophyCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Trophy"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/trophies/{id}/synergy-status": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna el progreso detallado de cada hábito que compone el trofeo compuesto",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trophies"
+                ],
+                "summary": "Consultar estado de un trofeo de sinergia",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del trofeo",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.SynergyStatusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/me/trophies": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna todos los trofeos indicando si han sido desbloqueados y en qué fecha",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Trophies"
+                ],
+                "summary": "Vitrina de trofeos del usuario autenticado",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.ShowcaseTrophy"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna los retos del usuario filtrables opcionalmente por status (ej: ACTIVE, COMPLETED).",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Listar retos estratégicos del usuario",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Filtrar por estado (ACTIVE, COMPLETED, FAILED, ARCHIVED, CANCELLED)",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.Challenge"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Permite definir un reto a plazo fijo con fechas, objetivo y recompensa final.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Crear un reto estratégico",
+                "parameters": [
+                    {
+                        "description": "Datos del reto",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.CreateChallengeCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Challenge"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges/upcoming-deadlines": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Devuelve hitos pendientes de retos activos con vencimiento próximo (por defecto en los siguientes 3 días)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Próximas deadlines intermedias para alertas del Dashboard",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Días de anticipación (default: 3)",
+                        "name": "days",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/entities.UpcomingDeadline"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retorna el reto, su lista de hitos, porcentaje de progreso y días restantes.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Obtener detalle de un reto con sus hitos y progreso",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.ChallengeDetail"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Actualizar título, descripción o recompensa de un reto",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos a modificar",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.UpdateChallengeCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Challenge"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges/{id}/milestones": {
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Añadir un hito o deadline intermedia a un reto",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Datos del hito",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.CreateMilestoneCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Milestone"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges/{id}/milestones/{milestoneId}": {
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Eliminar un hito de un reto",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID del Hito",
+                        "name": "milestoneId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Modificar datos o marcar un hito como completado",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "ID del Hito",
+                        "name": "milestoneId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Campos a modificar",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/usecases.UpdateMilestoneCommand"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entities.Milestone"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/challenges/{id}/status": {
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Challenges"
+                ],
+                "summary": "Cambiar estado del reto (COMPLETED, CANCELLED, ARCHIVED, etc.)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID del Reto",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Nuevo estado",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.updateStatusRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "entities.Challenge": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reward": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/entities.ChallengeStatus"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.ChallengeDetail": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "days_elapsed": {
+                    "type": "integer"
+                },
+                "days_remaining": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "done_milestones": {
+                    "type": "integer"
+                },
+                "end_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "milestones": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.Milestone"
+                    }
+                },
+                "progress_percent": {
+                    "type": "number"
+                },
+                "reward": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "status": {
+                    "$ref": "#/definitions/entities.ChallengeStatus"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "total_days": {
+                    "type": "integer"
+                },
+                "total_milestones": {
+                    "type": "integer"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.ChallengeStatus": {
+            "type": "string",
+            "enum": [
+                "ACTIVE",
+                "COMPLETED",
+                "FAILED",
+                "ARCHIVED",
+                "CANCELLED"
+            ],
+            "x-enum-varnames": [
+                "ChallengeStatusActive",
+                "ChallengeStatusCompleted",
+                "ChallengeStatusFailed",
+                "ChallengeStatusArchived",
+                "ChallengeStatusCancelled"
+            ]
+        },
+        "entities.Domain": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.DomainEffortPoint": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "completed_count": {
+                    "type": "integer"
+                },
+                "domain_id": {
+                    "type": "string"
+                },
+                "domain_name": {
+                    "type": "string"
+                },
+                "effort_score": {
+                    "description": "Normalizado de 0 a 100",
+                    "type": "number"
+                }
+            }
+        },
+        "entities.DomainWithHabitCount": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "habit_count": {
+                    "type": "integer"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.FocusmateSession": {
             "type": "object",
             "properties": {
@@ -283,11 +1397,64 @@
                 "id": {
                     "type": "string"
                 },
+                "partner_name": {
+                    "type": "string"
+                },
                 "start_time": {
                     "type": "string"
                 },
                 "status": {
                     "description": "ej. \"upcoming\"",
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Habit": {
+            "type": "object",
+            "properties": {
+                "archived": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "domain_id": {
+                    "type": "string"
+                },
+                "frequency": {
+                    "description": "\"daily\" | \"weekly\"",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.HabitCheckInResult": {
+            "type": "object",
+            "properties": {
+                "current_streak": {
+                    "type": "integer"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "log_date": {
+                    "type": "string"
+                },
+                "max_streak": {
+                    "type": "integer"
+                },
+                "message": {
                     "type": "string"
                 }
             }
@@ -332,6 +1499,83 @@
                 }
             }
         },
+        "entities.HabitWithStreak": {
+            "type": "object",
+            "properties": {
+                "archived": {
+                    "type": "boolean"
+                },
+                "completed_today": {
+                    "type": "boolean"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "current_streak": {
+                    "type": "integer"
+                },
+                "domain_color": {
+                    "type": "string"
+                },
+                "domain_id": {
+                    "type": "string"
+                },
+                "domain_name": {
+                    "type": "string"
+                },
+                "frequency": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "max_streak": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.Milestone": {
+            "type": "object",
+            "properties": {
+                "challenge_id": {
+                    "type": "string"
+                },
+                "completed_at": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_completed": {
+                    "type": "boolean"
+                },
+                "order_index": {
+                    "type": "integer"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        },
         "entities.Ritual": {
             "type": "object",
             "properties": {
@@ -351,6 +1595,310 @@
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.ShowcaseTrophy": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.TrophyCondition"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                },
+                "target_type": {
+                    "$ref": "#/definitions/entities.TrophyTargetType"
+                },
+                "unlocked": {
+                    "type": "boolean"
+                },
+                "unlocked_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.SynergyHabitProgress": {
+            "type": "object",
+            "properties": {
+                "current_streak": {
+                    "type": "integer"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "habit_name": {
+                    "type": "string"
+                },
+                "is_met": {
+                    "type": "boolean"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                }
+            }
+        },
+        "entities.SynergyStatusResponse": {
+            "type": "object",
+            "properties": {
+                "progress": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entities.SynergyHabitProgress"
+                    }
+                },
+                "trophy_id": {
+                    "type": "string"
+                },
+                "trophy_name": {
+                    "type": "string"
+                },
+                "unlocked": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "entities.Trophy": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                },
+                "target_type": {
+                    "$ref": "#/definitions/entities.TrophyTargetType"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.TrophyCondition": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                },
+                "trophy_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "entities.TrophyTargetType": {
+            "type": "string",
+            "enum": [
+                "master_streak",
+                "habit",
+                "synergy"
+            ],
+            "x-enum-varnames": [
+                "TargetMasterStreak",
+                "TargetHabit",
+                "TargetSynergy"
+            ]
+        },
+        "entities.UpcomingDeadline": {
+            "type": "object",
+            "properties": {
+                "challenge_id": {
+                    "type": "string"
+                },
+                "challenge_title": {
+                    "type": "string"
+                },
+                "days_remaining": {
+                    "type": "integer"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "milestone_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "urgency_level": {
+                    "description": "\"overdue\", \"critical\" (\u003c=1d), \"warning\" (\u003c=3d), \"normal\"",
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.updateStatusRequest": {
+            "type": "object",
+            "required": [
+                "status"
+            ],
+            "properties": {
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.CreateChallengeCommand": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "reward": {
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.CreateDomainCommand": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.CreateHabitCommand": {
+            "type": "object",
+            "properties": {
+                "domain_id": {
+                    "type": "string"
+                },
+                "frequency": {
+                    "description": "\"daily\" | \"weekly\"",
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.CreateMilestoneCommand": {
+            "type": "object",
+            "properties": {
+                "challenge_id": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "description": "YYYY-MM-DD",
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.CreateTrophyCommand": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "conditions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/usecases.TrophyConditionInput"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "habit_id": {
+                    "type": "string"
+                },
+                "icon": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                },
+                "target_type": {
+                    "description": "\"master_streak\" | \"habit\" | \"synergy\"",
                     "type": "string"
                 },
                 "user_id": {
@@ -379,6 +1927,77 @@
                 "user_id": {
                     "type": "string",
                     "example": "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                }
+            }
+        },
+        "usecases.TrophyConditionInput": {
+            "type": "object",
+            "properties": {
+                "habit_id": {
+                    "type": "string"
+                },
+                "required_streak_days": {
+                    "type": "integer"
+                }
+            }
+        },
+        "usecases.UpdateChallengeCommand": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "reward": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.UpdateDomainCommand": {
+            "type": "object",
+            "properties": {
+                "color": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "usecases.UpdateMilestoneCommand": {
+            "type": "object",
+            "properties": {
+                "challenge_id": {
+                    "type": "string"
+                },
+                "due_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "is_completed": {
+                    "type": "boolean"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         }

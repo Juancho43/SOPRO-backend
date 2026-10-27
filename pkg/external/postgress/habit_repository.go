@@ -22,38 +22,17 @@ func (r *PostgresHabitRepository) Create(ctx context.Context, habit *entities.Ha
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	tx, err := r.db.Begin(ctx)
-	if err != nil {
-		return err
-	}
-	defer tx.Rollback(ctx)
-
 	query := `
-		INSERT INTO habits (user_id, name, frequency, domain_id) 
-		VALUES ($1, $2, $3, $4) 
+		INSERT INTO habits (user_id, name, frequency, domain_id, current_streak, max_streak, archived) 
+		VALUES ($1, $2, $3, $4, 0, 0, FALSE) 
 		RETURNING id, archived, created_at, updated_at`
 
-	err = tx.QueryRow(ctx, query, habit.UserID, habit.Name, habit.Frequency, habit.DomainID).Scan(
+	return r.db.QueryRow(ctx, query, habit.UserID, habit.Name, habit.Frequency, habit.DomainID).Scan(
 		&habit.ID,
 		&habit.Archived,
 		&habit.CreatedAt,
 		&habit.UpdatedAt,
 	)
-	if err != nil {
-		return err
-	}
-
-	// Inicializamos el registro en habit_streaks
-	streakQuery := `
-		INSERT INTO habit_streaks (user_id, habit_name, habit_id, frequency, current_streak, max_streak, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, 0, 0, $5, $5)`
-
-	_, err = tx.Exec(ctx, streakQuery, habit.UserID, habit.Name, habit.ID, habit.Frequency, habit.CreatedAt)
-	if err != nil {
-		return err
-	}
-
-	return tx.Commit(ctx)
 }
 
 func (r *PostgresHabitRepository) GetByID(ctx context.Context, id string) (*entities.Habit, error) {
@@ -94,8 +73,8 @@ func (r *PostgresHabitRepository) ListByUserID(ctx context.Context, userID strin
 		SELECT 
 			h.id, h.user_id, h.name, h.frequency, h.archived, h.domain_id,
 			d.name AS domain_name, d.color AS domain_color,
-			COALESCE(hs.current_streak, 0) AS current_streak,
-			COALESCE(hs.max_streak, 0) AS max_streak,
+			COALESCE(h.current_streak, 0) AS current_streak,
+			COALESCE(h.max_streak, 0) AS max_streak,
 			EXISTS (
 				SELECT 1 FROM habit_logs hl 
 				WHERE hl.habit_id = h.id AND hl.log_date = $2
@@ -103,7 +82,6 @@ func (r *PostgresHabitRepository) ListByUserID(ctx context.Context, userID strin
 			h.created_at, h.updated_at
 		FROM habits h
 		LEFT JOIN domains d ON d.id = h.domain_id
-		LEFT JOIN habit_streaks hs ON hs.habit_id = h.id
 		WHERE h.user_id = $1 AND h.archived = FALSE
 		ORDER BY h.created_at ASC`
 
@@ -231,8 +209,8 @@ func (r *PostgresHabitRepository) GetStreakByHabitID(ctx context.Context, habitI
 
 	query := `
 		SELECT current_streak, max_streak, updated_at 
-		FROM habit_streaks 
-		WHERE habit_id = $1`
+		FROM habits 
+		WHERE id = $1`
 
 	var currentStreak, maxStreak int
 	var updatedAt time.Time
@@ -261,26 +239,10 @@ func (r *PostgresHabitRepository) SaveHabitStreak(
 	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 
-	// Primero verificamos si ya existe por habit_id
-	checkQuery := `SELECT id FROM habit_streaks WHERE habit_id = $1`
-	var existingID string
-	err := r.db.QueryRow(ctx, checkQuery, habitID).Scan(&existingID)
-	if err != nil && !errors.Is(err, pgx.ErrNoRows) {
-		return err
-	}
-
-	if existingID != "" {
-		updateQuery := `
-			UPDATE habit_streaks 
-			SET current_streak = $1, max_streak = $2, updated_at = $3 
-			WHERE id = $4`
-		_, err = r.db.Exec(ctx, updateQuery, currentStreak, maxStreak, now, existingID)
-		return err
-	}
-
-	insertQuery := `
-		INSERT INTO habit_streaks (habit_id, user_id, habit_name, frequency, current_streak, max_streak, created_at, updated_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $7)`
-	_, err = r.db.Exec(ctx, insertQuery, habitID, userID, habitName, frequency, currentStreak, maxStreak, now)
+	updateQuery := `
+		UPDATE habits 
+		SET current_streak = $1, max_streak = $2, updated_at = $3 
+		WHERE id = $4 AND user_id = $5`
+	_, err := r.db.Exec(ctx, updateQuery, currentStreak, maxStreak, now, habitID, userID)
 	return err
 }

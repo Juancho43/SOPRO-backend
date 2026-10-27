@@ -1,15 +1,172 @@
 basePath: /
 definitions:
+  entities.Challenge:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      end_date:
+        description: YYYY-MM-DD
+        type: string
+      id:
+        type: string
+      reward:
+        type: string
+      start_date:
+        description: YYYY-MM-DD
+        type: string
+      status:
+        $ref: '#/definitions/entities.ChallengeStatus'
+      title:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.ChallengeDetail:
+    properties:
+      created_at:
+        type: string
+      days_elapsed:
+        type: integer
+      days_remaining:
+        type: integer
+      description:
+        type: string
+      done_milestones:
+        type: integer
+      end_date:
+        description: YYYY-MM-DD
+        type: string
+      id:
+        type: string
+      milestones:
+        items:
+          $ref: '#/definitions/entities.Milestone'
+        type: array
+      progress_percent:
+        type: number
+      reward:
+        type: string
+      start_date:
+        description: YYYY-MM-DD
+        type: string
+      status:
+        $ref: '#/definitions/entities.ChallengeStatus'
+      title:
+        type: string
+      total_days:
+        type: integer
+      total_milestones:
+        type: integer
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.ChallengeStatus:
+    enum:
+    - ACTIVE
+    - COMPLETED
+    - FAILED
+    - ARCHIVED
+    - CANCELLED
+    type: string
+    x-enum-varnames:
+    - ChallengeStatusActive
+    - ChallengeStatusCompleted
+    - ChallengeStatusFailed
+    - ChallengeStatusArchived
+    - ChallengeStatusCancelled
+  entities.Domain:
+    properties:
+      color:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.DomainEffortPoint:
+    properties:
+      color:
+        type: string
+      completed_count:
+        type: integer
+      domain_id:
+        type: string
+      domain_name:
+        type: string
+      effort_score:
+        description: Normalizado de 0 a 100
+        type: number
+    type: object
+  entities.DomainWithHabitCount:
+    properties:
+      color:
+        type: string
+      created_at:
+        type: string
+      habit_count:
+        type: integer
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
   entities.FocusmateSession:
     properties:
       end_time:
         type: string
       id:
         type: string
+      partner_name:
+        type: string
       start_time:
         type: string
       status:
         description: ej. "upcoming"
+        type: string
+    type: object
+  entities.Habit:
+    properties:
+      archived:
+        type: boolean
+      created_at:
+        type: string
+      domain_id:
+        type: string
+      frequency:
+        description: '"daily" | "weekly"'
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.HabitCheckInResult:
+    properties:
+      current_streak:
+        type: integer
+      habit_id:
+        type: string
+      log_date:
+        type: string
+      max_streak:
+        type: integer
+      message:
         type: string
     type: object
   entities.HabitFrequency:
@@ -39,6 +196,57 @@ definitions:
       userID:
         type: string
     type: object
+  entities.HabitWithStreak:
+    properties:
+      archived:
+        type: boolean
+      completed_today:
+        type: boolean
+      created_at:
+        type: string
+      current_streak:
+        type: integer
+      domain_color:
+        type: string
+      domain_id:
+        type: string
+      domain_name:
+        type: string
+      frequency:
+        type: string
+      id:
+        type: string
+      max_streak:
+        type: integer
+      name:
+        type: string
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.Milestone:
+    properties:
+      challenge_id:
+        type: string
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      due_date:
+        description: YYYY-MM-DD
+        type: string
+      id:
+        type: string
+      is_completed:
+        type: boolean
+      order_index:
+        type: integer
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
   entities.Ritual:
     properties:
       created_at:
@@ -52,6 +260,208 @@ definitions:
       grateful_for:
         type: string
       id:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.ShowcaseTrophy:
+    properties:
+      color:
+        type: string
+      conditions:
+        items:
+          $ref: '#/definitions/entities.TrophyCondition'
+        type: array
+      created_at:
+        type: string
+      description:
+        type: string
+      habit_id:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      required_streak_days:
+        type: integer
+      target_type:
+        $ref: '#/definitions/entities.TrophyTargetType'
+      unlocked:
+        type: boolean
+      unlocked_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entities.SynergyHabitProgress:
+    properties:
+      current_streak:
+        type: integer
+      habit_id:
+        type: string
+      habit_name:
+        type: string
+      is_met:
+        type: boolean
+      required_streak_days:
+        type: integer
+    type: object
+  entities.SynergyStatusResponse:
+    properties:
+      progress:
+        items:
+          $ref: '#/definitions/entities.SynergyHabitProgress'
+        type: array
+      trophy_id:
+        type: string
+      trophy_name:
+        type: string
+      unlocked:
+        type: boolean
+    type: object
+  entities.Trophy:
+    properties:
+      color:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      habit_id:
+        type: string
+      icon:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      required_streak_days:
+        type: integer
+      target_type:
+        $ref: '#/definitions/entities.TrophyTargetType'
+      user_id:
+        type: string
+    type: object
+  entities.TrophyCondition:
+    properties:
+      created_at:
+        type: string
+      habit_id:
+        type: string
+      id:
+        type: string
+      required_streak_days:
+        type: integer
+      trophy_id:
+        type: string
+    type: object
+  entities.TrophyTargetType:
+    enum:
+    - master_streak
+    - habit
+    - synergy
+    type: string
+    x-enum-varnames:
+    - TargetMasterStreak
+    - TargetHabit
+    - TargetSynergy
+  entities.UpcomingDeadline:
+    properties:
+      challenge_id:
+        type: string
+      challenge_title:
+        type: string
+      days_remaining:
+        type: integer
+      due_date:
+        type: string
+      milestone_id:
+        type: string
+      title:
+        type: string
+      urgency_level:
+        description: '"overdue", "critical" (<=1d), "warning" (<=3d), "normal"'
+        type: string
+    type: object
+  handlers.updateStatusRequest:
+    properties:
+      status:
+        type: string
+    required:
+    - status
+    type: object
+  usecases.CreateChallengeCommand:
+    properties:
+      description:
+        type: string
+      end_date:
+        description: YYYY-MM-DD
+        type: string
+      reward:
+        type: string
+      start_date:
+        description: YYYY-MM-DD
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.CreateDomainCommand:
+    properties:
+      color:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.CreateHabitCommand:
+    properties:
+      domain_id:
+        type: string
+      frequency:
+        description: '"daily" | "weekly"'
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.CreateMilestoneCommand:
+    properties:
+      challenge_id:
+        type: string
+      due_date:
+        description: YYYY-MM-DD
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.CreateTrophyCommand:
+    properties:
+      color:
+        type: string
+      conditions:
+        items:
+          $ref: '#/definitions/usecases.TrophyConditionInput'
+        type: array
+      description:
+        type: string
+      habit_id:
+        type: string
+      icon:
+        type: string
+      name:
+        type: string
+      required_streak_days:
+        type: integer
+      target_type:
+        description: '"master_streak" | "habit" | "synergy"'
         type: string
       user_id:
         type: string
@@ -74,12 +484,180 @@ definitions:
         example: f47ac10b-58cc-4372-a567-0e02b2c3d479
         type: string
     type: object
+  usecases.TrophyConditionInput:
+    properties:
+      habit_id:
+        type: string
+      required_streak_days:
+        type: integer
+    type: object
+  usecases.UpdateChallengeCommand:
+    properties:
+      description:
+        type: string
+      id:
+        type: string
+      reward:
+        type: string
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.UpdateDomainCommand:
+    properties:
+      color:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      user_id:
+        type: string
+    type: object
+  usecases.UpdateMilestoneCommand:
+    properties:
+      challenge_id:
+        type: string
+      due_date:
+        type: string
+      id:
+        type: string
+      is_completed:
+        type: boolean
+      title:
+        type: string
+      user_id:
+        type: string
+    type: object
 info:
   contact: {}
   description: SOPRO_CORE_ENGINE
   title: SOPRO_CORE
   version: "0.1"
 paths:
+  /api/domains:
+    get:
+      description: Recupera los dominios configurados con el recuento de hábitos asociados
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.DomainWithHabitCount'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Listar dominios de excelencia del usuario
+      tags:
+      - Domains
+    post:
+      consumes:
+      - application/json
+      description: Permite categorizar áreas de desarrollo personal con paleta de
+        color personalizada
+      parameters:
+      - description: Datos del dominio
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.CreateDomainCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Domain'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Crear un dominio de excelencia
+      tags:
+      - Domains
+  /api/domains/{id}:
+    delete:
+      parameters:
+      - description: ID del dominio
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Eliminar un dominio de excelencia
+      tags:
+      - Domains
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del dominio
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Datos a actualizar
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.UpdateDomainCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Actualizar un dominio de excelencia
+      tags:
+      - Domains
+  /api/domains/radar:
+    get:
+      description: Retorna el esfuerzo agregado de los últimos 7 días por dominio
+        para graficar en radar
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.DomainEffortPoint'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Métricas de radar semanal por dominio
+      tags:
+      - Domains
   /api/focusmate/sessions/future:
     get:
       description: Retorna la lista de bloques de tiempo de alta concentración programados.
@@ -103,6 +681,112 @@ paths:
       summary: Obtiene todas las sesiones futuras de Focusmate
       tags:
       - Focusmate
+  /api/habits:
+    get:
+      description: Retorna los hábitos activos del usuario, sus rachas y si ya fueron
+        completados hoy
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.HabitWithStreak'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Listar hábitos del arsenal con rachas
+      tags:
+      - Habits
+    post:
+      consumes:
+      - application/json
+      description: Permite registrar un hábito individual con frecuencia diaria o
+        semanal y dominio opcional
+      parameters:
+      - description: Datos del hábito
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.CreateHabitCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Habit'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Crear un nuevo hábito en el arsenal
+      tags:
+      - Habits
+  /api/habits/{id}/check-in:
+    post:
+      description: Marca el hábito como completado hoy, recalcula racha y emite evento
+        de gamificación
+      parameters:
+      - description: ID del hábito
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.HabitCheckInResult'
+        "404":
+          description: Hábito no encontrado
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "409":
+          description: Ya registrado hoy
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Registrar cumplimiento diario de un hábito
+      tags:
+      - Habits
+  /api/habits/{id}/history:
+    get:
+      description: Retorna las fechas (YYYY-MM-DD) de cumplimiento de los últimos
+        365 días
+      parameters:
+      - description: ID del hábito
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Historial de cumplimiento para mapa de calor
+      tags:
+      - Habits
   /api/health:
     get:
       description: Verifica que el motor del sistema esté en línea y operando a su
@@ -173,13 +857,13 @@ paths:
       summary: Crea tu ritual diario
       tags:
       - Rituals
-  /api/rituals/by-date:
+  /api/rituals/{date}:
     get:
-      description: Devuelve el ritual registrado en una fecha enviada como query param
-        (ej. ?date=YYYY-MM-DD).
+      description: Devuelve el ritual registrado en una fecha enviada en la url (ej.
+        /api/rituals/2026-10-07).
       parameters:
       - description: Fecha del ritual en formato YYYY-MM-DD
-        in: query
+        in: path
         name: date
         required: true
         type: string
@@ -253,6 +937,376 @@ paths:
       summary: Obtener la racha de un hábito específico
       tags:
       - Streaks
+  /api/trophies:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Trophy'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Listar trofeos creados
+      tags:
+      - Trophies
+    post:
+      consumes:
+      - application/json
+      description: Permite definir trofeos simples vinculados a hábitos o racha maestra,
+        o trofeos de sinergia multihábito (AND)
+      parameters:
+      - description: Definición del trofeo
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.CreateTrophyCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Trophy'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Diseñar un nuevo trofeo o logro
+      tags:
+      - Trophies
+  /api/trophies/{id}/synergy-status:
+    get:
+      description: Retorna el progreso detallado de cada hábito que compone el trofeo
+        compuesto
+      parameters:
+      - description: ID del trofeo
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.SynergyStatusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Consultar estado de un trofeo de sinergia
+      tags:
+      - Trophies
+  /api/users/me/trophies:
+    get:
+      description: Retorna todos los trofeos indicando si han sido desbloqueados y
+        en qué fecha
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.ShowcaseTrophy'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Vitrina de trofeos del usuario autenticado
+      tags:
+      - Trophies
+  /api/v1/challenges:
+    get:
+      description: 'Retorna los retos del usuario filtrables opcionalmente por status
+        (ej: ACTIVE, COMPLETED).'
+      parameters:
+      - description: Filtrar por estado (ACTIVE, COMPLETED, FAILED, ARCHIVED, CANCELLED)
+        in: query
+        name: status
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.Challenge'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Listar retos estratégicos del usuario
+      tags:
+      - Challenges
+    post:
+      consumes:
+      - application/json
+      description: Permite definir un reto a plazo fijo con fechas, objetivo y recompensa
+        final.
+      parameters:
+      - description: Datos del reto
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.CreateChallengeCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Challenge'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Crear un reto estratégico
+      tags:
+      - Challenges
+  /api/v1/challenges/{id}:
+    get:
+      description: Retorna el reto, su lista de hitos, porcentaje de progreso y días
+        restantes.
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.ChallengeDetail'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Obtener detalle de un reto con sus hitos y progreso
+      tags:
+      - Challenges
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Datos a modificar
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.UpdateChallengeCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Challenge'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Actualizar título, descripción o recompensa de un reto
+      tags:
+      - Challenges
+  /api/v1/challenges/{id}/milestones:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Datos del hito
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.CreateMilestoneCommand'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entities.Milestone'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Añadir un hito o deadline intermedia a un reto
+      tags:
+      - Challenges
+  /api/v1/challenges/{id}/milestones/{milestoneId}:
+    delete:
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID del Hito
+        in: path
+        name: milestoneId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Eliminar un hito de un reto
+      tags:
+      - Challenges
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: ID del Hito
+        in: path
+        name: milestoneId
+        required: true
+        type: string
+      - description: Campos a modificar
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/usecases.UpdateMilestoneCommand'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entities.Milestone'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Modificar datos o marcar un hito como completado
+      tags:
+      - Challenges
+  /api/v1/challenges/{id}/status:
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID del Reto
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Nuevo estado
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.updateStatusRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Cambiar estado del reto (COMPLETED, CANCELLED, ARCHIVED, etc.)
+      tags:
+      - Challenges
+  /api/v1/challenges/upcoming-deadlines:
+    get:
+      description: Devuelve hitos pendientes de retos activos con vencimiento próximo
+        (por defecto en los siguientes 3 días)
+      parameters:
+      - description: 'Días de anticipación (default: 3)'
+        in: query
+        name: days
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entities.UpcomingDeadline'
+            type: array
+      security:
+      - BearerAuth: []
+      summary: Próximas deadlines intermedias para alertas del Dashboard
+      tags:
+      - Challenges
 securityDefinitions:
   BearerAuth:
     in: header

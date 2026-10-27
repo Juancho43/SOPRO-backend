@@ -69,7 +69,7 @@ func (uc *CheckInHabitUseCase) Execute(ctx context.Context, habitID string, user
 		return nil, err
 	}
 
-	// 3. Recalcular racha en habit_streaks
+	// 3. Recalcular racha en habits
 	currentStreak, maxStreak, lastUpdated, err := uc.habitRepo.GetStreakByHabitID(ctx, habitID)
 	if err != nil {
 		return nil, err
